@@ -1,4 +1,4 @@
-<?php // (C) Copyright Bobbing Wide 2013
+<?php // (C) Copyright Bobbing Wide 2013, 2014
 
 /**
  * Implement bw_form_field_ hook for "mshot"
@@ -13,15 +13,19 @@ function bw_form_field_mshot( $name, $type, $title, $value, $args ) {
 
 /**
  * Theme an "mshot" field 
- 
+ * 
  * @param string $key - field name e.g. _oikpp_mshot
  * @param mixed $value - post metadata value
  * @param array $field - the field structure if defined using bw_register_field()
  */
 function bw_theme_field_mshot( $key, $value, $field ) {
   oik_require( "shortcodes/oik-mshot.php", "oik-mshot" );
-  e( oikms_mshot( array( "url" => $value ) ) );
-  bw_theme_field_URL( $key, $value );
+  bw_trace2();    
+  $url = bw_array_get( $value, 0, $value );
+  if ( $url ) {
+    e( oikms_mshot( array( "url" => $url ) ) );
+    bw_theme_field_URL( $key, $url );
+  }  
 }
 
 

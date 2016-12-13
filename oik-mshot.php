@@ -4,12 +4,12 @@ Plugin Name: oik mshot
 Depends: oik base plugin, oik fields
 Plugin URI: http://www.oik-plugins.com/oik-plugins/oik-mshot
 Description: [bw_mshot] shortcode to display the screenshot for a website's (home) page and provide the "mshot" custom field type
-Version: 0.2
+Version: 0.3
 Author: bobbingwide
 Author URI: http://www.bobbingwide.com
 License: GPL2
 
-    Copyright 2012, 2013 Bobbing Wide (email : herb@bobbingwide.com )
+    Copyright 2012-2014 Bobbing Wide (email : herb@bobbingwide.com )
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License version 2,
@@ -56,16 +56,21 @@ function oikms_admin_menu() {
 } 
 
 /**
- * Dependency checking for oik-fields. Requires oik v2.0
+ * Implement "admin_notices" dependency checking for oik-mshot
+ *
+ * Requires oik v2.0
+ * Now requires oik v2.2 and oik-fields
  */ 
 function oikms_activation() {
   static $plugin_basename = null;
   if ( !$plugin_basename ) {
     $plugin_basename = plugin_basename(__FILE__);
-    add_action( "after_plugin_row_" . $plugin_basename, __FUNCTION__ );   
-    require_once( "admin/oik-activation.php" );
+    add_action( "after_plugin_row_oik-mshot/oik-mshot.php", "oikms_activation" ); 
+    if ( !function_exists( "oik_plugin_lazy_activation" ) ) { 
+      require_once( "admin/oik-activation.php" );
+    }
   }  
-  $depends = "oik:2.0-alpha,oik-fields:";
+  $depends = "oik:2.2,oik-fields";
   oik_plugin_lazy_activation( __FILE__, $depends, "oik_plugin_plugin_inactive" );
 }
 

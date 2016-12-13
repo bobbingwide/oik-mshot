@@ -3,8 +3,8 @@ Contributors: bobbingwide
 Donate link: http://www.oik-plugins.com/oik/oik-donate/
 Tags: mshot, shortcodes, smart, lazy
 Requires at least: 3.9
-Tested up to: 3.9.1
-Stable tag: 0.3
+Tested up to: 4.7
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,9 @@ Version 0.2 provides support for the "mshot" custom field
 1. oik-mshot in action
 
 == Upgrade Notice ==
+= 0.3.1 = 
+Tested with WordPress 4.7 and WordPress Multisite
+
 = 0.3 =
 Now supported with WordPress 3.9 or higher
 
@@ -36,6 +39,11 @@ First version for Howard Popeck's "Our Listeners Club" website
 
 
 == Changelog == 
+= 0.3.1 = 
+* Tested: With WordPress 4.7 [github bobbingwide oik-mshot issues 1]
+* Changed: Now using semantic versioning
+* Changed: Now dependent upon oik v3.1 and oik-fields v1.40.4
+
 = 0.3 = 
 * Fixed: Theming for mshort field. Field may be null.
 

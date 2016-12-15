@@ -39,6 +39,7 @@ function oikms_loaded() {
  */
 function oikms_pre_form_field() {
   oik_require( "includes/oik-mshot.inc", "oik-mshot" );
+  oik_require( "includes/oik-mshot2.inc", "oik-mshot" );
 }
 
 /**
@@ -46,6 +47,7 @@ function oikms_pre_form_field() {
  */
 function oikms_pre_theme_field() {
   oik_require( "includes/oik-mshot.inc", "oik-mshot" );
+  oik_require( "includes/oik-mshot2.inc", "oik-mshot" );
 }
 
 /**
@@ -81,8 +83,24 @@ function oikms_activation() {
  */
 function oikms_query_field_types( $field_types ) {
   $field_types['mshot'] = __( "mshot - screen capture", 'oik-mshot' ); 
+  $field_types['mshot2'] = __( "cached mshot - screen capture", 'oik-mshot' ); 
   return( $field_types );
 }
+
+/**
+ * Implement save_post for oik-mshot
+ *
+ * @param ID $post_id
+ * @param array $post
+ */
+function oikms_save_post( $post_id, $post ) {
+	// Check validity of the call
+  if ( $post->post_status != "auto-draft"  ) {
+		oik_require( "admin/oik-mshot-save-post.php", "oik-mshot" );
+		oikms_lazy_save_post( $post_id, $post );
+	}	
+}
+
 /**
  * Initialisation for oik-mshot 
  */
@@ -93,6 +111,7 @@ function oikms_plugin_loaded() {
   add_action( "admin_notices", "oikms_activation" );
   add_action( "oik_admin_menu", "oikms_admin_menu" );
   add_action( "oik_query_field_types", "oikms_query_field_types" );
+	add_action( "save_post", "oikms_save_post", 9, 2 );
 }
 
 oikms_plugin_loaded();

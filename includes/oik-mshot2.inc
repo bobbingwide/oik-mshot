@@ -8,7 +8,11 @@
  * - url - the URL used to create the screenshot
  * - id - the post ID of the attachment created for that URL
  * 
- * 
+ * @param string $name - field name 
+ * @param string $type - expected to be mshot2
+ * @param string $title 
+ * @param array $value - an array of serialized post meta data
+ * @param array $args - additional parameters
  */
 function bw_form_field_mshot2( $name, $type, $title, $value, $args ) {
 	bw_trace2();

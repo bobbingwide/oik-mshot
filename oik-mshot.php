@@ -96,7 +96,7 @@ function oikms_query_field_types( $field_types ) {
 function oikms_save_post( $post_id, $post ) {
 	// Check validity of the call
   if ( $post->post_status != "auto-draft"  ) {
-		oik_require( "admin/oik-mshot-save-post.php", "oik-mshot" );
+		oik_require( "admin/oik-mshot2-save-post.php", "oik-mshot" );
 		oikms_lazy_save_post( $post_id, $post );
 	}	
 }

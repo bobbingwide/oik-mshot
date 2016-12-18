@@ -44,9 +44,9 @@ function oikms_get_mshot_fields( $post_type ) {
 /**
  * Check if the current mshot ID needs updating
  * 
- * @TODO 
  * - Obtain the current serialized value for the given post and field name
  * - Check if we need to do anything
+ * - Do what needs to be done
  * - Set the $_POST[ $field ] to the serialized value to be saved
  * 
  * @param ID $post_id
@@ -54,13 +54,16 @@ function oikms_get_mshot_fields( $post_type ) {
  * @param string $field - the field name
  */
 function oikms_check_mshot_id( $post_id, $post, $field ) {
-	//gob();
-	$mshot = $_POST[ $field ];
-	$id = 19851;
+	oik_require( "admin/class-oik-mshot2.php", "oik-mshot" );
+	$mshot = new OIK_mshot2( $post_id, $field );
+	$mshot->check();
+	//
+	//$mshot = $_POST[ $field ];
+	//$id = 19851;
 	// We need to store it as a serialized field, not an array
 	// 
-	$_POST[ $field ] = serialize( array( "url" => $mshot, "id" => $id ) );
-	
+	//$_POST[ $field ] = serialize( array( "url" => $mshot, "id" => $id ) );
 	bw_trace2( $_POST, "_POST" );
-
 }
+
+	

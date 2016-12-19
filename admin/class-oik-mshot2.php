@@ -7,7 +7,6 @@
  *
  */
 class OIK_mshot2 {
-
 								
 	public $url;
 	public $id;
@@ -22,27 +21,35 @@ class OIK_mshot2 {
 	/**
 	 * Constructor for OIK_mshot2 class
 	 */
-	
 	function __construct( $post_id, $field ) {
 		$this->post_id = $post_id;
 		$this->field = $field;
+		$this->current_url = null;
+		$this->current_id = null;
 	}
 	
 	/**
 	 * Get the post_meta for the post id and field name
+	 * 
+	 * We assume the current_url and current_id are not set. 
+	 * If the current_id is not numeric we set it to 0.
 	 */
 	function get_post_meta() {
+		$this->current_url = null;
+		$this->current_id = 0;
 		$value = get_post_meta( $this->post_id, $this->field, false );
-		$serialized = bw_array_get( $value, 0, $value );
-		$unserialized = unserialize( $serialized );
-		$this->current_url = bw_array_get( $unserialized, "url", null );
-		$this->current_id = bw_array_get( $unserialized, "id", null );
-		if ( !is_numeric( $this->current_id ) ) {
-			$this->current_id = 0;
-			//gob();
+		bw_trace2( $value, "post_meta" );
+		$serialized = bw_array_get( $value, 0, null );
+		if ( $serialized ) {
+			$unserialized = unserialize( $serialized );
+			$this->current_url = bw_array_get( $unserialized, "url", null );
+			$this->current_id = bw_array_get( $unserialized, "id", null );
+			if ( !is_numeric( $this->current_id ) ) {
+				bw_trace2( $this->current_id, "current_id non-numeric", false, BW_TRACE_ERROR );
+				$this->current_id = 0;
+			}
 		}
 	}
-	
 	
 	/** 
 	 * Set the $_POST value to update the post_meta
@@ -64,33 +71,28 @@ class OIK_mshot2 {
 	 * Note: From my local machine I get 
 	 * Warning: file_get_contents(http://s.wordpress.com/mshots/v1/http%3A%2F%2Fbigram.co.uk?w=600): 
 	 * failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden in 
+	 
+	 * 
+	 * download_url() doesn't get this problem, but it might return an 'http_404' code when it's actually received a 307.
+	 * This can be detected by looking at
+	 * 
+	 * @TODO check that the file is not default.gif
+	 * @link https://github.com/Automattic/mShots
 	 */
 	function fetch_mshot() {
 		oik_require( "shortcodes/oik-mshot.php", "oik-mshot" );
-		//oik_require_lib( "class-oik-remote" );
 		$atts = array( "url" => $this->url );
 		$mshoturl = oikms_get_mshot_url( $atts );
 		bw_trace2( $mshoturl, "mshoturl" );
-		//$mshot = file_get_contents( $mshoturl );
-		//$this->mshot = oik_remote::bw_remote_get2( $mshoturl );
-		//bw_trace2( $this->mshot, "mshot" );
 		$file = download_url( $mshoturl );
-		bw_trace2( $file, "file" );
-		
-		// @TODO check that the file is not default.gif
-		// 
-    $this->id = oikms_create_attachment( $atts, $file, "cached screenshot", $this->post_id );
-		bw_trace2( $this->id, "attachment id" );
-		
-		// gob();
+		bw_trace2( $file, "file or WP_Error" );
+		if ( is_wp_error( $file ) ) {
+			$this->id = $this->current_id;
+		} else {
+			$this->id = oikms_create_attachment( $atts, $file, "cached screenshot for " . $this->url, $this->post_id );
+			bw_trace2( $this->id, "attachment id" );
+		}
 	}
-	
-	
-	
-	function save_mshot_as_attachment() {
-		// this will set $this->id
-		
-	} 
 	
 	/**
 	 * Check if the mshot needs updating
@@ -107,7 +109,6 @@ class OIK_mshot2 {
 	 * null | null       | ? | Do nothing
 	 * 
 	 */
-	
 	function check() {
 		$fetch = false;
 		$this->get_post_meta();
@@ -131,7 +132,6 @@ class OIK_mshot2 {
 		}
 		if ( $fetch ) {
 			$this->fetch_mshot();
-			$this->save_mshot_as_attachment();
 		}
 		$this->set_post_meta();
 	}
@@ -144,8 +144,5 @@ class OIK_mshot2 {
 	function get_url() {
 		$this->url = $_POST[ $this->field ];
 	}
-
-
-
 
 }

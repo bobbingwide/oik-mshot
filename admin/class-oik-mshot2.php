@@ -121,7 +121,7 @@ class OIK_mshot2 {
 					if ( !$this->current_id ) {
 						$fetch = true;
 					} else {
-						gob();
+						//gob();
 					}
 				}
 			} else {

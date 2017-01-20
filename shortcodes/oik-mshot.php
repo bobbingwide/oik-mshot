@@ -1,4 +1,4 @@
-<?php // (C) Copyright Bobbing Wide 2012, 2014
+<?php // (C) Copyright Bobbing Wide 2012-2017
 
 
 /**
@@ -117,13 +117,16 @@ function oikms_create_attachment( $atts, $file, $desc, $post_id=0 ) {
 }
 
 /**
- * Return the URL for accessing the mshot 
+ * Returns the URL for accessing the mshot
+ * 
+ * @param array $atts - shortcode attributes
+ * @return string the URL for the mshot
  */
 function oikms_get_mshot_url( $atts ) {
   $mshot = bw_array_get( $atts, "mshot", 'http://s.wordpress.com/mshots/v1/' );
   $url = bw_array_get( $atts, "url", "http://www.oik-plugins.com" );
   $title = bw_array_get( $atts, "title", null );
-  $w = bw_array_get( $atts, "w", 600 );
+  $w = bw_array_get( $atts, "w", 768 );
   $h = bw_array_get( $atts, "h", null );
   
   $src = $mshot;

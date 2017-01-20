@@ -1,4 +1,4 @@
-<?php // (C) Copyright Bobbing Wide 2016
+<?php // (C) Copyright Bobbing Wide 2016, 2017
 
 /** 
  * Class: OIK_mshot2
@@ -7,7 +7,7 @@
  *
  */
 class OIK_mshot2 {
-								
+
 	public $url;
 	public $id;
 	public $field; // Field name e.g. _mshot
@@ -17,7 +17,7 @@ class OIK_mshot2 {
 	public $post_id;
 	public $mshot;
 	public $file;
-	
+
 	/**
 	 * Constructor for OIK_mshot2 class
 	 */
@@ -27,7 +27,7 @@ class OIK_mshot2 {
 		$this->current_url = null;
 		$this->current_id = null;
 	}
-	
+
 	/**
 	 * Get the post_meta for the post id and field name
 	 * 
@@ -50,7 +50,7 @@ class OIK_mshot2 {
 			}
 		}
 	}
-	
+
 	/** 
 	 * Set the $_POST value to update the post_meta
 	 *
@@ -61,7 +61,7 @@ class OIK_mshot2 {
 	function set_post_meta() {
 		$_POST[ $this->field ] = serialize( array( "url" => $this->url, "id" => $this->id ) );
 	}
-	
+
 	/**
 	 * Fetch the mshot 
 	 * 
@@ -83,9 +83,7 @@ class OIK_mshot2 {
 		oik_require( "shortcodes/oik-mshot.php", "oik-mshot" );
 		$atts = array( "url" => $this->url );
 		$mshoturl = oikms_get_mshot_url( $atts );
-		bw_trace2( $mshoturl, "mshoturl" );
-		$file = download_url( $mshoturl );
-		bw_trace2( $file, "file or WP_Error" );
+		$file = $this->download_url( $mshoturl );
 		if ( is_wp_error( $file ) ) {
 			$this->id = $this->current_id;
 		} else {
@@ -93,7 +91,48 @@ class OIK_mshot2 {
 			bw_trace2( $this->id, "attachment id" );
 		}
 	}
+
+	/**
+	 * Downloads the URL to a file.
+	 * 
+	 * Having received the file name we need to check it's what we wanted.
+	 * We need to stop the loop after a sensible number of requests.
+	 */
+	function download_url( $mshoturl ) { 		
+		bw_trace2( $mshoturl, "mshoturl" );
+		$jpeg = false;
+		$count = 0;
+		while ( false === $jpeg && $count <= 3 ) {
+			$count++;
+			$file = download_url( $mshoturl );
+			bw_trace2( $file, "file or WP_Error" );
+			if ( is_wp_error( $file ) ) {
+				break; 
+			}	else {
+				$jpeg = $this->check_downloaded_file( $file );
+			}
+		}
+		return( $file );
+	}
 	
+	/**
+	 * Check we've got a jpeg
+	 *
+	 * We want to avoid the default.gif file
+	 *
+	 * @param string $file
+	 * @return bool true when it's a jpeg
+	 */
+	function check_downloaded_file( $file ) {
+		$image_size = getimagesize( $file );
+		$mime_type = bw_array_get( $image_size, "mime", null );
+		$jpeg = "image/jpeg" === $mime_type;
+		if ( !$jpeg ) {	
+		 	unlink( $file );
+		}
+		return( $jpeg );
+	}
+
 	/**
 	 * Check if the mshot needs updating
 	 *

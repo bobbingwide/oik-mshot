@@ -84,7 +84,7 @@ class OIK_mshot2 {
 		$atts = array( "url" => $this->url );
 		$mshoturl = oikms_get_mshot_url( $atts );
 		$file = $this->download_url( $mshoturl );
-		if ( is_wp_error( $file ) ) {
+		if ( $file == null ||  is_wp_error( $file ) ) {
 			$this->id = $this->current_id;
 		} else {
 			$this->id = oikms_create_attachment( $atts, $file, "cached screenshot for " . $this->url, $this->post_id );
@@ -128,7 +128,7 @@ class OIK_mshot2 {
 		$mime_type = bw_array_get( $image_size, "mime", null );
 		$jpeg = "image/jpeg" === $mime_type;
 		if ( !$jpeg ) {	
-		 	unlink( $file );
+		 	//unlink( $file );
 		}
 		return( $jpeg );
 	}

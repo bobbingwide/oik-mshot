@@ -3,13 +3,13 @@
 Plugin Name: oik mshot
 Depends: oik base plugin, oik fields
 Plugin URI: http://www.oik-plugins.com/oik-plugins/oik-mshot
-Description: [bw_mshot] shortcode to display the screenshot for a website's (home) page and provide the "mshot" custom field type
-Version: 0.3.1
+Description: provide the "mshot" and "mshot2" custom field types and [bw_mshot] shortcode to for ad hoc screenshots
+Version: 0.4.0
 Author: bobbingwide
-Author URI: http://www.bobbingwide.com
+Author URI: http://www.bobbingwide.com/author/bobbingwide
 License: GPL2
 
-    Copyright 2012-2016 Bobbing Wide (email : herb@bobbingwide.com )
+    Copyright 2012-2017 Bobbing Wide (email : herb@bobbingwide.com )
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License version 2,
@@ -62,7 +62,7 @@ function oikms_admin_menu() {
  *
  * - Requires oik v2.0
  * - Now requires oik v2.2 and oik-fields
- * - v0.3.1 now requires oik v3.1 and oik-fields v1.40.4
+ * - v0.4.0 now requires oik v3.1 and oik-fields v1.40.4
  */ 
 function oikms_activation() {
   static $plugin_basename = null;
